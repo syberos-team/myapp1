@@ -1,0 +1,8 @@
+{
+  "projectName": "myapp1",
+  "appName": "myapp1",
+  "webPath": "www",
+  "target": "target-armv7tnhl-os4_1_1",
+  "targetSimulator": "target-i686-os4_1_1",
+  "sopid": "com.syberh.myapp1"
+}
