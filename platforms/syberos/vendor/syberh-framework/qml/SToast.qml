@@ -42,8 +42,8 @@ Rectangle {
 
     width: unit.dp(330)
     height: scaleFactor * 330
-    x: Screen.width/ 2 - width / 2
-    y: Screen.height  / 2 - height / 2 - gScreenInfo.statusBarHeight
+    x: parent.width/ 2 - width / 2
+    y: parent.height  / 2 - height / 2 - gScreenInfo.statusBarHeight
 
     color: "#000000"
     radius: 6
@@ -111,7 +111,7 @@ Rectangle {
             return "提示的内容不能为空";
         }
 
-        if(!icon){
+        if(!icon || (icon !== "success" && icon !== "error")){
             icon = "success";
         }
 

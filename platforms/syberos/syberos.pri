@@ -10,6 +10,8 @@ APP_DATA = /data/data
 INSTALL_DIR = $$APP_DIR/com.syberh.myapp1
 DATA_DIR = $$APP_DATA/com.syberh.myapp1
 
+LIB_DIR = /data/app-libs/com.syberh.myapp1
+
 DEFINES += SOP_ID=\\\"com.syberh.myapp1\\\"
 DEFINES += APP_DIR_ENVVAR=\\\"APPDIR_REGULAR\\\"
 # Currently home screen sets the environment variable, so when run from
