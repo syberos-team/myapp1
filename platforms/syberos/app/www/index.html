@@ -34,10 +34,12 @@
   /**
    * 注册接收原生的错误信息
    */
-  syberh.subscribe('onShow', function (result) {
-    document.getElementById("text1").innerHTML = JSON.stringify(result);
+  syberh.subscribe('onReady', function (result) {
+    console.log('onReady', result)
+    if (result) {
+      document.getElementById("text1").innerHTML = JSON.stringify(result);
+    }
   });
-
 </script>
 
 </html>
