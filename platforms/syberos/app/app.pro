@@ -61,7 +61,6 @@ DEFINES += EX_CONFIG=\\\"$$EX_CONFIG\\\"
 
 include (../vendor/vendor.pri)
 
-DEFINES += TDEBUG
 
 #vendor_path = ../vendor/vendor.pri
 #syberh_framework_path = ../../../../syberh-framework/syberh_framework.pri

@@ -6,6 +6,9 @@ var WebviewStatusPop = 1;
 var OnShowStautsReady = 'ready';
 var OnShowStautsRedisplay = 'redisplay';
 
+// 初次打开的页面
+var HomePageUrl = '';
+
 function WebView (options) {
   // 默认参数
   var defaultOpts = {
@@ -100,6 +103,8 @@ function WebView (options) {
       NativeSdkManager.subscribe.connect(that.onSubscribe.bind(that));
 
       logger.verbose('on ready registrNativeSdkManager:[%s] 绑定完成', registrNativeSdkManager);
+    
+      HomePageUrl = swebviews[0].object.getCurrentUrl();
     }
 
     // 绑定消息接受信号
@@ -759,14 +764,16 @@ WebView.prototype.onSubscribe = function (handlerName, result) {
   }
   // 第2个APP被唤起的时候，监听的onReady事件
   if (handlerName === 'package') {
-    var params = {};
-    params.url = result.path;
+    // var params = {};
+    // params.url = result.path;
     this.pushQueue('subscribe', {
       handlerName: 'onReady',
-      url: result.path,
+      url: HomePageUrl,
       result: result
     });
-    this.trigger('redirectTo', this.object, null, params);
+    
+    swebviews[0].object.reload();
+    // this.trigger('redirectTo', this.object, null, params);
 
     return;
   }
