@@ -2,7 +2,7 @@
   "projectName": "myapp1",
   "appName": "myapp1",
   "webPath": "www",
-  "target": "target-armv7tnhl-os4_1_1",
-  "targetSimulator": "target-i686-os4_1_1",
+  "target": "target-qt5.12.5-syberos-5_0",
+  "targetSimulator": "",
   "sopid": "com.syberh.myapp1"
 }

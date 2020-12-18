@@ -23,6 +23,7 @@
       <a href="second.html">跳转到second页面</a>
     </p>
     <h3>index.html被唤起后的回调信息如下:</h3>
+    <h3 onclick="ha()">index.html被唤起后的回调信息如下:</h3>
     <textarea id="text1" cols="40" rows="10" style="height: auto"></textarea>
 
   </div>
@@ -39,7 +40,32 @@
     if (result) {
       document.getElementById("text1").innerHTML = JSON.stringify(result);
     }
+
+    setTimeout(function() {
+      syberh.router.navigateTo({
+        url:'second.html',
+        data: result.params,
+        success:function(result){
+          console.log('success',result); 
+        }
+      })
+    }, 300)
+
   });
+
+  function ha() {
+    console.log('我走这个方法了....')
+    syberh.router.setBackgroundColor({
+      backgroundColor: "red",
+      success:function(result){
+        console.log('success',result); 
+      },
+      fail:function(error){
+        console.log('fail: ', error.code, error.msg);
+      }
+    })
+  }
+
 </script>
 
 </html>

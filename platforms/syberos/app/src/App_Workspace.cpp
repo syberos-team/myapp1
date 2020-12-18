@@ -8,34 +8,32 @@
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
 #include <qtwebengineglobal.h>
 #else
-#include "../../vendor/syberh-framework/src/senvironment.h"
+#include "../../nativesdk/src/senvironment.h"
 #endif
 
-#include "../../vendor/syberh-framework/src/helper.h"
-#include "../../vendor/syberh-framework/src/framework/nativesdkmanager.h"
-#include "../../vendor/syberh-framework/src/framework/common/extendedconfig.h"
-#include "../../vendor/syberh-framework/src/util/log.h"
-#include "../../vendor/syberh-framework/src/package.h"
-#include "../../vendor/syberh-framework/src/util/fileutil.h"
-#include "../../vendor/syberh-framework/src/framework/common/errorinfo.h"
+#include "../../nativesdk/src/helper.h"
+#include "../../nativesdk/src/framework/nativesdkmanager.h"
+#include "../../nativesdk/src/framework/common/projectconfig.h"
+#include "../../nativesdk/src/util/log.h"
+#include "../../nativesdk/src/util/fileutil.h"
+#include "../../nativesdk/src/framework/common/errorinfo.h"
 
-#ifdef QRCODE
-#include "../../vendor/syberh-qrcode/src/qrcoderegister.h"
-#endif
+
+
+using namespace NativeSdk;
 
 App_Workspace::App_Workspace()
     : CWorkspace()
 {
-
-    // 设置日志级别
-    QString devLog = ExtendedConfig::instance()->get(EX_DEV_LOG).toString();
-    if(devLog.isEmpty()){
-      bool debug=  ExtendedConfig::instance()->get(EX_DEBUG).toBool();
-      if(debug){
-          devLog=LOG_VERBOSE;
-      }
+    ProjectConfig *projectConfig = ProjectConfig::instance();
+    // 设置日志级别，若开启了debug将日志级别强制设为verbose
+    QString logLevel = projectConfig->getLogLevel();
+    bool debug = projectConfig->isDebug();
+    if(debug){
+        logLevel = LOG_VERBOSE;
     }
-    Log::instance()->setLevel(devLog);
+    Log::instance()->setLevel(logLevel);
+
 
     // 初始化错误信息
     ErrorInfo::init();
@@ -47,6 +45,13 @@ App_Workspace::App_Workspace()
     //QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
     QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 
+    // 开启 chromium devtools
+    if(debug){
+        QString devToolServer = QString("%1:%2").arg(projectConfig->getDeployIP()).arg(projectConfig->getDebuggingPort());
+        qputenv("QTWEBENGINE_REMOTE_DEBUGGING", devToolServer.toLatin1());
+        qDebug() << "QTWEBENGINE_REMOTE_DEBUGGING:" << devToolServer;
+    }
+
     QtWebEngine::initialize();
     #endif
 
@@ -55,9 +60,9 @@ App_Workspace::App_Workspace()
 
     QObject::connect(m_view->engine(), SIGNAL(quit()), qApp, SLOT(quit()));
 
+    m_view->rootContext()->setContextProperty("projectConfig", projectConfig);
     Helper *helper = Helper::instance();
     m_view->rootContext()->setContextProperty("helper", helper);
-
 
     NativeSdkManager * nativeSdkManager = NativeSdkManager::getInstance();
     m_view->rootContext()->setContextProperty("NativeSdkManager",nativeSdkManager);
@@ -65,25 +70,19 @@ App_Workspace::App_Workspace()
     FileUtil * fileutil = new FileUtil;
     m_view->rootContext()->setContextProperty("fileutil",fileutil);
 
-    // qrcode
-#ifdef QRCODE
-    QrcodeRegister * qrcode = new QrcodeRegister();
-    qrcode->init(m_view);
-#endif
 
-    // QT版本大于5.6，选择进入特定的qml页面, qml适配， 266是9860手机的dpi值
-    #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-    CEnvironment::initAppDpi(266);
-    m_view->setSource(QUrl("qrc:/qml/main59.qml"));
+    // 根据QT版本调用对应系统版本的main.qml
+    #if (QT_VERSION < QT_VERSION_CHECK(5, 6, 0))
+        SEnvironment *env = new SEnvironment;
+        m_view->rootContext()->setContextProperty("env", env);
+        m_view->setSource(QUrl("qrc:/qml/os2/main.qml"));
+    #elif (QT_VERSION < QT_VERSION_CHECK(5, 12, 0))
+        m_view->setSource(QUrl("qrc:/qml/os4/main.qml"));
     #else
-    SEnvironment *env = new SEnvironment;
-    m_view->rootContext()->setContextProperty("env", env);
-    m_view->setSource(QUrl("qrc:/qml/main.qml"));
+        m_view->setSource(QUrl("qrc:/qml/os5/main.qml"));
     #endif
 
     m_view->showFullScreen();
-
-    m_root = (QObject *)(m_view->rootObject());
 
 }
 
@@ -124,3 +123,4 @@ void App_Workspace::openByUrl(const QUrl& url){
 void App_Workspace::openByDocument(const QString& action, const QString& mimetype, const QString& file){
     NativeSdkManager::getInstance()->openByDocument(action, mimetype, file);
 }
+

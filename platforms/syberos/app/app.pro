@@ -1,19 +1,10 @@
 include(../syberos.pri)
 
-QT_VERSION = $$[QT_VERSION]
-QT_VERSION = $$split(QT_VERSION, ".")
-QT_VER_MAJ = $$member(QT_VERSION, 0)
-QT_VER_MIN = $$member(QT_VERSION, 1)
+SYBERH_QT_VERSION = $$[QT_VERSION]
+SYBERH_QT_VERSION = $$split(SYBERH_QT_VERSION, ".")
+QT_VER_MIN = $$member(SYBERH_QT_VERSION, 1)
 
-lessThan(QT_VER_MAJ, 5) | lessThan(QT_VER_MIN, 6) {
-	message(Qt版本小于5.6)
-  QT += webkit
-} else {
-  message(Qt版本大于等于5.6)
-  QT += webengine webchannel
-}
-
-QT += gui qml quick widgets network multimedia core sql dbus
+QT += gui qml quick widgets core
 
 TEMPLATE = app
 
@@ -22,15 +13,31 @@ TARGET = app
 CONFIG += link_pkgconfig
 CONFIG += C++11
 
-RESOURCES += res.qrc
+RESOURCES += app.qrc
 
-PKGCONFIG += syberos-application syberos-application-cache syberos-qt-system syberos-qt
+lessThan(QT_VER_MIN, 12) {
+    lessThan(QT_VER_MIN, 6) {
+        message(Qt版本小于5.6)
+        QT += webkit
+        RESOURCES += res2.qrc
+    } else {
+        message(Qt版本大于等于5.6小于5.12)
+        QT += webengine webchannel
+        RESOURCES += res4.qrc
+    }
+} else {
+    message(Qt版本大于等于5.12)
+    QT += webengine webchannel
+    RESOURCES += res5.qrc
+}
+
+PKGCONFIG += syberos-application syberos-application-cache syberos-qt
 
 QML_FILES = qml/*.qml
 
 OTHER_FILES += $$QML_FILES *.qm
 
-QMAKE_LFLAGS += -Wl,-rpath,$$INSTALL_DIR/lib
+QMAKE_LFLAGS += -Wl,-rpath=$$INSTALL_DIR/lib
 # The .cpp file which was generated for your project.
 SOURCES += src/main.cpp \
     src/App_Workspace.cpp
@@ -56,20 +63,10 @@ INSTALLS += target qm web res
 DISTFILES += \
     res/app.png
 
-DEFINES += EX_CONFIG=\\\"$$EX_CONFIG\\\"
+LIB_OUT_DIR = $$clean_path($$PWD/../lib)
+LIBS += -L$$LIB_OUT_DIR -lpluginmanager
+LIBS += -L$$LIB_OUT_DIR -lnativesdk
 
-
-include (../vendor/vendor.pri)
-
-
-#vendor_path = ../vendor/vendor.pri
-#syberh_framework_path = ../../../../syberh-framework/syberh_framework.pri
-
-#exists($$vendor_path){
-#    message(Compiling with: $$vendor_path)
-#    include ($$vendor_path)
-#    DEFINES += USE_VENDOR
-#} else:exists($$syberh_framework_path){
-#    message(Compiling with: $$syberh_framework_path)
-#    include ($$syberh_framework_path)
-#}
+CONFIG(release, debug|release){
+    QMAKE_POST_LINK=$(STRIP) $(TARGET)
+}

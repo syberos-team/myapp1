@@ -1,0 +1,22 @@
+{
+	"debug": true,
+	"hot": false,
+	"logLevel": "info",
+	"projectName": "myapp1",
+	"appName": "myapp1",
+	"sopid": "com.syberh.myapp1",
+	"target": "target-qt5.12.5-syberos-5_0",
+	"targetSimulator": "",
+	"webPath": "www",
+	"homePage": "",
+	"storeBaseUrl": "https://storeinner.syberos.com",
+	"deployIP": "192.168.100.100",
+	"deployPort": "22",
+	"devServerIP": "192.168.100.101",
+	"devServerPort": "4399",
+	"debuggingPort": "9867",
+	"statusBar": {
+		"show": true,
+		"style": "black"
+	}
+}

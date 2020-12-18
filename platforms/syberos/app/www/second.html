@@ -17,12 +17,13 @@
 
 <body>
   <div id="root">
-    <h3>Hello,SyberOS</h3>
+    <h3>Hello,SyberOS123123123123123</h3>
     <p id="text"></p>
     <p>
       <a href="index.html">跳转到index页面</a>
     </p>
-    <h3>second.html被唤起后的回调信息如下:</h3>
+    <h3 onclick="changeColor()">second.html被唤起后的回调信息如下:</h3>
+    
     <textarea id="text1" cols="40" rows="10" style="height: auto"></textarea>
 
   </div>
@@ -33,12 +34,25 @@
   /**
    * 注册接收原生的错误信息
    */
-  syberh.subscribe('onReady', function (result) {
-    console.log('onReady', result)
-    if (result) {
-      document.getElementById("text1").innerHTML = JSON.stringify(result);
-    }
+  syberh.subscribe('onReady', function () {
+    console.log('onReady', new Date())
+    console.log('location.href****', location.href)
+    var params = location.href.split('?')[1]
+    console.log('location.href ****', JSON.stringify(params))
+    document.getElementById("text1").innerHTML = JSON.stringify(params)
   });
+  function changeColor() {
+    // alert('哈哈哈哈哈哈')
+    syberh.router.setBackgroundColor({
+      color: "red",
+      success:function(result){
+        console.log('success',result); 
+      },
+      fail:function(error){
+        console.log('fail: ', error.code, error.msg);
+      }
+    })
+  }
 </script>
 
 </html>
