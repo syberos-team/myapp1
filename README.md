@@ -1,6 +1,11 @@
 # myapp1
 > syberh示例项目下的应用管理，需要的第二个APP示例项目
 
+### OS5.0项目(在分支os5上)
+```bash
+git clone -b os5 https://github.com/xue99999/myapp1
+```
+
 ### OS4.1项目
 ```bash
 git clone https://github.com/xue99999/myapp1
@@ -32,3 +37,8 @@ git clone -b os2_1 https://github.com/xue99999/myapp1
 </application>
 ```
 
+## 旧项目如何升级OS5.0
+> 1. 升级cli，安装OS5.0
+> 2. 更新项目
+> 3. 替换OS5.0的证书
+> 4. 切换target
