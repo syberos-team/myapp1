@@ -3,16 +3,16 @@
 
 ### OS5.0项目(在分支os5上)
 ```bash
-git clone -b os5 https://github.com/xue99999/myapp1
+git clone -b os5 https://github.com/syberos-team/myapp1
 ```
 
 ### OS4.1项目
 ```bash
-git clone https://github.com/xue99999/myapp1
+git clone https://github.com/syberos-team/myapp1
 ```
 ### OS2.1项目(在分支os2_1上)
 ```bash
-git clone -b os2_1 https://github.com/xue99999/myapp1
+git clone -b os2_1 https://github.com/syberos-team/myapp1
 ```
 
 ## 如何支持被其他应用调起来
